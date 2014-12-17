@@ -8,6 +8,8 @@ module.exports =
     outPath: null
     binary: null
     process: null
+    fileName: null
+    fsw: null
 
     nextMessage: null
 
@@ -15,6 +17,7 @@ module.exports =
       @inPath = inPath
       @outPath = outPath
       @nextMessage = outPath
+      @fileName = @getFileName()
       @binary = path.join(__dirname, "..", "node_modules", ".bin", "node-sass")
 
       @start()
@@ -24,7 +27,7 @@ module.exports =
 
       @renderFile()
 
-      fs.watch(@inPath, => @renderFile())
+      @fsw = fs.watch(@inPath, => @renderFile())
 
     end: ->
       @process?.kill('SIGTERM')
@@ -45,3 +48,9 @@ module.exports =
     sendMessage: (code) ->
       atom.notifications.addSuccess('Converted to CSS', {detail: @nextMessage})
       @nextMessage = @outPath
+
+    getFileName: ->
+      @inPath.split("/").slice(-1).pop()
+
+    stop: ->
+      @fsw.close()

@@ -1,6 +1,7 @@
-{$, $$} = require 'atom-space-pen-views'
 path = require 'path'
 fs = require 'fs-plus'
+
+{$, $$} = require 'atom-space-pen-views'
 
 describe 'SASS Watch', ->
   [activationPromise, editor, editorView, targetView] = []
@@ -73,7 +74,24 @@ describe 'SASS Watch', ->
 
       expect(targetView).not.toBeVisible()
       mainModule = atom.packages.getActivePackage('sass-watch').mainModule
-      expect(mainModule.watchers.length).toBe 1
+      expect(mainModule.watchers[sourcePath]).not.toBe null
+
+  describe 'The Watcher', ->
+    it 'should store the in/out paths', ->
+      atom.commands.dispatch editorView, 'sass-watch:watch'
+
+      waitsForPromise ->
+        activationPromise
+
+      runs ->
+        sourcePath = path.join(__dirname, 'samples', 'example.scss')
+        expectedPath = path.join(__dirname, 'samples', 'example.css')
+        mainModule = atom.packages.getActivePackage('sass-watch').mainModule
+        watcher = mainModule.watchers[sourcePath]
+        expect(watcher.inPath).toBe sourcePath
+        expect(watcher.outPath).toBe expectedPath
+        expect(watcher.fileName).toBe 'example.scss'
+
 
   describe 'The List', ->
     it 'should appear', ->
@@ -86,7 +104,7 @@ describe 'SASS Watch', ->
         listView = $(atom.workspace.getModalPanels()[0].getItem()).view()
         expect(listView).toBeVisible()
 
-    it 'should contain watchers',
+    it 'should contain watchers', ->
       atom.commands.dispatch editorView, 'sass-watch:list'
 
       waitsForPromise ->
@@ -95,4 +113,4 @@ describe 'SASS Watch', ->
       runs ->
         sourcePath = path.join(__dirname, 'samples', 'example.scss')
         listView = $(atom.workspace.getModalPanels()[0].getItem()).view()
-        expect(listView.innerHTML).toContain sourcePath
+        expect(listView.items[0].inPath).toBe sourcePath

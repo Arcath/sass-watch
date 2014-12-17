@@ -1,5 +1,6 @@
 {$, $$} = require 'space-pen'
 {SelectListView} = require 'atom-space-pen-views'
+WatcherView = require './watcher-view'
 
 module.exports =
   class ListView extends SelectListView
@@ -19,13 +20,13 @@ module.exports =
     viewForItem: (watcher) ->
       $$ ->
         @li class: 'two-lines', =>
-          @div class: 'primary-line', watcher.inPath
-          @div class: 'secondary-line', watcher.outPath
+          @div class: 'primary-line', watcher.fileName
+          @div class: 'secondary-line', watcher.inPath
 
     cancelled: -> @detach()
 
     confirmed: (watcher) ->
-      console.log watcher
+      @watcherView = new WatcherView(watcher)
 
     getFilterKey: ->
       'inPath'
