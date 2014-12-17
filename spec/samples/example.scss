@@ -1,0 +1,15 @@
+$textColor: #444;
+
+body{
+  color:$textColor;
+  font-size:1em;
+  font-family:sans-serif;
+
+  p{
+    color:darken($textColor, 10%);
+
+    a{
+      color:#9bf;
+    }
+  }
+}

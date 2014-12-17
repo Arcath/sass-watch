@@ -1,0 +1,24 @@
+{
+  "name": "sass-watch",
+  "main": "./lib/sass-watch",
+  "version": "0.0.0",
+  "description": "A collection of snippets and tools for Jekyll",
+  "activationCommands": {
+    "atom-workspace": [
+      "sass-watch:watch",
+      "sass-watch:list"
+    ]
+  },
+  "repository": "https://github.com/arcath/sass-watch",
+  "license": "MIT",
+  "engines": {
+    "atom": "*"
+  },
+  "dependencies": {
+    "fs-plus": "^2.0.4",
+    "node-sass": "^1.2.3",
+    "space-pen": "^4",
+    "atom-space-pen-views": "^0",
+    "underscore-plus": "1.x"
+  }
+}
