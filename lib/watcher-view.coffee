@@ -4,10 +4,12 @@ module.exports =
   class WatcherView extends View
     @content: (watcher) ->
       @div class: 'sass-watcher-view', =>
-        @div class: 'text-highlight', watcher.fileName
-        @div =>
-          @p watcher.inPath
-          @p watcher.outPath
+        @h1 class: 'section-heading', watcher.fileName
+        @ul class: 'list-group', =>
+          @li class: 'list-item', =>
+            @span class: 'icon icon-file-text', 'Source: ' + watcher.inPath
+          @li class: 'list-item', =>
+            @span class: 'icon icon-file-text', 'Output: ' + watcher.outPath
         @div class: 'block', =>
           @div class: 'btn-group', =>
             @button class: 'btn', click: 'stopWatcher', 'Stop Watching'

@@ -19,9 +19,7 @@ module.exports =
 
     viewForItem: (watcher) ->
       $$ ->
-        @li class: 'two-lines', =>
-          @div class: 'primary-line', watcher.fileName
-          @div class: 'secondary-line', watcher.inPath
+        @li watcher.fileName
 
     cancelled: -> @detach()
 
