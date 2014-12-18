@@ -13,11 +13,16 @@ module.exports =
       atom.commands.add @element,
       'core:cancel': => @detach()
 
-    attach: (inPath)->
+    attach: (inPath, oldWatchers)->
       @panel = atom.workspace.addModalPanel(item: this)
       @path = inPath
 
-      @miniEditor.getModel().setText(inPath.replace('.scss', '.css'))
+      if oldWatchers[inPath]
+        target = oldWatchers[inPath]
+      else
+        target = inPath.replace('.scss', '.css')
+
+      @miniEditor.getModel().setText(target)
       @miniEditor.focus()
       @miniEditor.getModel().scrollToCursorPosition()
 

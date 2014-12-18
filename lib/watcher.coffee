@@ -10,7 +10,6 @@ module.exports =
     fileName: null
     editor: null
     disposable: null
-    fsw: null
 
     nextMessage: null
 
@@ -63,5 +62,5 @@ module.exports =
     editorClosed: ->
       @stop()
       atom.notifications.addInfo('Stopped Watching File', {detail: @inPath})
-      SassWatch = atom.packages.getActivePackage('sass-watch').mainModule
-      delete SassWatch.watchers[@inPath]
+      SassWatch = atom.packages.getActivePackage('sass-watch')?.mainModule
+      delete SassWatch?.watchers[@inPath]
