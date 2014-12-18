@@ -80,4 +80,4 @@ module.exports =
     unless newOutput == @watchers[path].outPath
       @watchers[path].updateOutput newOutput
       @oldWatchers[path] = newOutput
-      atom.notifications.addInfo('Watcher Updated', {detail: path + ' will no compile to ' + newOutput})
+      atom.notifications.addInfo('Watcher Updated', {detail: path + ' will now compile to ' + newOutput})

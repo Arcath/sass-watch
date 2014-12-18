@@ -92,6 +92,50 @@ describe 'SASS Watch', ->
         expect(watcher.outPath).toBe expectedPath
         expect(watcher.fileName).toBe 'example.scss'
 
+    it 'should let you update the output', ->
+      atom.commands.dispatch editorView, 'sass-watch:watch'
+
+      waitsForPromise ->
+        activationPromise
+
+      runs ->
+        sourcePath = path.join(__dirname, 'samples', 'example.scss')
+        expectedPath = path.join(__dirname, 'samples', 'example.css')
+        mainModule = atom.packages.getActivePackage('sass-watch').mainModule
+        watcher = mainModule.watchers[sourcePath]
+
+        expect(watcher.outPath).toBe expectedPath
+        watcher.updateOutput('/foo')
+        expect(watcher.outPath).toBe '/foo'
+        watcher.updateOutput(expectedPath)
+
+    it 'should render the file', ->
+      atom.commands.dispatch editorView, 'sass-watch:watch'
+
+      waitsForPromise ->
+        activationPromise
+
+      runs ->
+        sourcePath = path.join(__dirname, 'samples', 'example.scss')
+        expectedPath = path.join(__dirname, 'samples', 'example.css')
+        mainModule = atom.packages.getActivePackage('sass-watch').mainModule
+        watcher = mainModule.watchers[sourcePath]
+
+        expect(watcher.outPath).toBe expectedPath
+        testPath = path.join(__dirname, 'samples', 'test.css')
+        watcher.updateOutput(testPath)
+
+        watcher.renderFile()
+
+        waitsFor ->
+          fs.existsSync(testPath)
+
+        runs ->
+          expect(fs.existsSync(testPath)).toBe true
+          fs.unlinkSync(testPath)
+
+          watcher.updateOutput(expectedPath)
+
 
   describe 'The List', ->
     it 'should appear', ->
