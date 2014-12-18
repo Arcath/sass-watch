@@ -9,6 +9,11 @@ Watcher = require './watcher'
 
 
 module.exports =
+  config:
+    nodePath:
+      type: 'string'
+      default: '/usr/local/bin'
+
   listView: null
   targetView: null
   nextEditor: null
@@ -62,9 +67,7 @@ module.exports =
     if fs.existsSync(filePath)
       @oldWatchers = cson.readFileSync(filePath)
 
-    atom.workspace.observeTextEditors (editor) ->
-      SassWatch = atom.packages.getActivePackage('sass-watch')?.mainModule
-      SassWatch?.didOpenFile(editor)
+    atom.workspace.observeTextEditors (editor) => @didOpenFile(editor)
 
   didOpenFile: (editor) ->
     file = editor?.buffer.file
@@ -72,3 +75,9 @@ module.exports =
 
     if @oldWatchers[filePath]
       atom.notifications.addInfo('Watch Again?', {detail: 'The file\r\n' + filePath + '\r\nhas been watched before if you watch it again the target\r\nwill default to\r\n' + @oldWatchers[filePath]})
+
+  updateWatcher: (path, newOutput) ->
+    unless newOutput == @watchers[path].outPath
+      @watchers[path].updateOutput newOutput
+      @oldWatchers[path] = newOutput
+      atom.notifications.addInfo('Watcher Updated', {detail: path + ' will no compile to ' + newOutput})
