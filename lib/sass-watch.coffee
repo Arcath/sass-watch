@@ -8,6 +8,7 @@ Watcher = require './watcher'
 module.exports =
   listView: null
   targetView: null
+  nextEditor: null
   watchers: {}
 
   activate: ->
@@ -28,6 +29,8 @@ module.exports =
     file = editor?.buffer.file
     filePath = file?.path
 
+    @nextEditor = editor
+
     if filePath
       @targetView.attach(filePath)
     else
@@ -35,7 +38,7 @@ module.exports =
 
   startWatch: (inPath, outPath) ->
     unless @watchers[inPath]
-      @watchers[inPath] = new Watcher(inPath, outPath)
+      @watchers[inPath] = new Watcher(inPath, outPath, @nextEditor)
     else
       atom.notifications.addInfo('SASS Watch', {detail: 'Already compling ' + inPath + ' to ' + outPath})
 

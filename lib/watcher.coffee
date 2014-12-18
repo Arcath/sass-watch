@@ -1,6 +1,5 @@
 path = require 'path'
 childProcess = require 'child_process'
-fs = require 'fs-plus'
 
 module.exports =
   class Watcher
@@ -9,15 +8,18 @@ module.exports =
     binary: null
     process: null
     fileName: null
+    editor: null
+    disposable: null
     fsw: null
 
     nextMessage: null
 
-    constructor: (inPath, outPath) ->
+    constructor: (inPath, outPath, editor) ->
       @inPath = inPath
       @outPath = outPath
       @nextMessage = outPath
       @fileName = @getFileName()
+      @editor = editor
       @binary = path.join(__dirname, "..", "node_modules", ".bin", "node-sass")
 
       @start()
@@ -27,9 +29,12 @@ module.exports =
 
       @renderFile()
 
-      @fsw = fs.watch(@inPath, => @renderFile())
+      @disposable = @editor.buffer.emitter.on 'did-save', => @renderFile()
+
+      @editor.emitter.on 'did-destroy', => @editorClosed()
 
     end: ->
+      @disposable?.dispose()
       @process?.kill('SIGTERM')
 
     renderFile: ->
@@ -53,4 +58,10 @@ module.exports =
       @inPath.split("/").slice(-1).pop()
 
     stop: ->
-      @fsw.close()
+      @disposable?.dispose()
+
+    editorClosed: ->
+      @stop()
+      atom.notifications.addInfo('Stopped Watching File', {detail: @inPath})
+      SassWatch = atom.packages.getActivePackage('sass-watch').mainModule
+      delete SassWatch.watchers[@inPath]
