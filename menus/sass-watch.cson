@@ -1,0 +1,12 @@
+'menu': [
+  {
+    'label': 'Packages'
+    'submenu': [
+      'label': 'Sass Watch'
+      'submenu': [
+        { 'label': 'Watch this File', 'command': 'sass-watch:watch'},
+        { 'label': 'List Watchers', 'command': 'sass-watch:list'}
+      ]
+    ]
+  }
+]
