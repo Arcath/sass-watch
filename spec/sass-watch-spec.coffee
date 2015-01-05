@@ -76,6 +76,28 @@ describe 'SASS Watch', ->
       mainModule = atom.packages.getActivePackage('sass-watch').mainModule
       expect(mainModule.watchers[sourcePath]).not.toBe null
 
+  it 'should add a warning if you are asking it to watch a non SASS file', ->
+    waitsForPromise ->
+      atom.workspace.open( path.join(__dirname, '..', 'lib', 'sass-watch.coffee') )
+
+    runs ->
+      editor = atom.workspace.getActiveTextEditor()
+      editorView = atom.views.getView(editor)
+
+      notifcationsCount = atom.notifications.notifications.length
+
+      atom.commands.dispatch editorView, 'sass-watch:watch'
+
+      waitsForPromise ->
+        activationPromise
+
+      runs ->
+        expect(atom.notifications.notifications.length).toBe (notifcationsCount + 1)
+        notification = atom.notifications.notifications.reverse()[0]
+        expect(notification.type).toBe 'warning'
+        expect(notification.options.detail).toBe 'coffee is not a SASS file'
+
+
   describe 'The Watcher', ->
     it 'should store the in/out paths', ->
       atom.commands.dispatch editorView, 'sass-watch:watch'

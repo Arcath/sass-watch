@@ -46,7 +46,13 @@ module.exports =
     @nextEditor = editor
 
     if filePath
-      @targetView.attach(filePath, @oldWatchers)
+      fileType = filePath.split(".").reverse()[0]
+
+      if fileType == "sass" or fileType == "scss"
+        @targetView.attach(filePath, @oldWatchers)
+      else
+        atom.notifications.addWarning('Sass Watch', {detail: fileType + ' is not a SASS file'})
+
     else
       atom.notifications.addError('SASS Watch', {detail: 'Unable to find the path for your current file. \r\nThis shouldn\'t happen please open an issue on the repo.'})
 
