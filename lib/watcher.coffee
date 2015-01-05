@@ -33,7 +33,7 @@ module.exports =
       @disposable?.dispose()
 
     renderFile: ->
-      childProcess.exec [@binary, @inPath, @outPath].join(' '), {env: {'PATH': process.env + ":" + atom.config.get('sass-watch.nodePath')}}, (error, stdout, stderr) => @handleExec(error, stdout, stderr)
+      childProcess.exec [@binary, @quotePath(@inPath), @quotePath(@outPath)].join(' '), {env: {'PATH': process.env + ":" + atom.config.get('sass-watch.nodePath')}}, (error, stdout, stderr) => @handleExec(error, stdout, stderr)
 
     handleExec: (error, stdout, stderr) ->
       if error
@@ -55,3 +55,6 @@ module.exports =
 
     updateOutput: (newOutput) ->
       @outPath = newOutput
+
+    quotePath: (path) ->
+      return ['"', path, '"'].join('')

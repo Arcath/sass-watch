@@ -7,7 +7,7 @@ describe 'SASS Watch', ->
   [activationPromise, editor, editorView, targetView] = []
 
   beforeEach ->
-    atom.project.setPaths([path.join(__dirname, 'samples')])
+    atom.project.setPaths([path.join(__dirname, 'samples with spaces')])
 
     workspaceElement = atom.views.getView(atom.workspace)
 
@@ -41,7 +41,7 @@ describe 'SASS Watch', ->
       activationPromise
 
     runs ->
-      expectedPath = path.join(__dirname, 'samples', 'example.css')
+      expectedPath = path.join(__dirname, 'samples with spaces', 'example.css')
       targetView = $(atom.workspace.getModalPanels()[0].getItem()).view()
       expect(targetView.miniEditor.getText()).toBe expectedPath
 
@@ -66,7 +66,7 @@ describe 'SASS Watch', ->
       activationPromise
 
     runs ->
-      sourcePath = path.join(__dirname, 'samples', 'example.scss')
+      sourcePath = path.join(__dirname, 'samples with spaces', 'example.scss')
       targetView = $(atom.workspace.getModalPanels()[0].getItem()).view()
       expect(targetView).toBeVisible()
 
@@ -84,8 +84,8 @@ describe 'SASS Watch', ->
         activationPromise
 
       runs ->
-        sourcePath = path.join(__dirname, 'samples', 'example.scss')
-        expectedPath = path.join(__dirname, 'samples', 'example.css')
+        sourcePath = path.join(__dirname, 'samples with spaces', 'example.scss')
+        expectedPath = path.join(__dirname, 'samples with spaces', 'example.css')
         mainModule = atom.packages.getActivePackage('sass-watch').mainModule
         watcher = mainModule.watchers[sourcePath]
         expect(watcher.inPath).toBe sourcePath
@@ -99,8 +99,8 @@ describe 'SASS Watch', ->
         activationPromise
 
       runs ->
-        sourcePath = path.join(__dirname, 'samples', 'example.scss')
-        expectedPath = path.join(__dirname, 'samples', 'example.css')
+        sourcePath = path.join(__dirname, 'samples with spaces', 'example.scss')
+        expectedPath = path.join(__dirname, 'samples with spaces', 'example.css')
         mainModule = atom.packages.getActivePackage('sass-watch').mainModule
         watcher = mainModule.watchers[sourcePath]
 
@@ -116,13 +116,13 @@ describe 'SASS Watch', ->
         activationPromise
 
       runs ->
-        sourcePath = path.join(__dirname, 'samples', 'example.scss')
-        expectedPath = path.join(__dirname, 'samples', 'example.css')
+        sourcePath = path.join(__dirname, 'samples with spaces', 'example.scss')
+        expectedPath = path.join(__dirname, 'samples with spaces', 'example.css')
         mainModule = atom.packages.getActivePackage('sass-watch').mainModule
         watcher = mainModule.watchers[sourcePath]
 
         expect(watcher.outPath).toBe expectedPath
-        testPath = path.join(__dirname, 'samples', 'test.css')
+        testPath = path.join(__dirname, 'samples with spaces', 'test.css')
         watcher.updateOutput(testPath)
 
         watcher.renderFile()
@@ -155,6 +155,6 @@ describe 'SASS Watch', ->
         activationPromise
 
       runs ->
-        sourcePath = path.join(__dirname, 'samples', 'example.scss')
+        sourcePath = path.join(__dirname, 'samples with spaces', 'example.scss')
         listView = $(atom.workspace.getModalPanels()[0].getItem()).view()
         expect(listView.items[0].inPath).toBe sourcePath
