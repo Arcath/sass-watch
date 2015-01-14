@@ -1,5 +1,7 @@
 $textColor: #444;
 
+@import 'extra.scss';
+
 body{
   color:$textColor;
   font-size:1em;

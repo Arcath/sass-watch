@@ -180,3 +180,16 @@ describe 'SASS Watch', ->
         sourcePath = path.join(__dirname, 'samples with spaces', 'example.scss')
         listView = $(atom.workspace.getModalPanels()[0].getItem()).view()
         expect(listView.items[0].inPath).toBe sourcePath
+
+  describe 'Watching imports', ->
+    it 'should find imports', ->
+      atom.commands.dispatch editorView, 'sass-watch:watch'
+
+      waitsForPromise ->
+        activationPromise
+
+      runs ->
+        sourcePath = path.join(__dirname, 'samples with spaces', 'example.scss')
+        extraPath = path.join(__dirname, 'samples with spaces', 'extra.scss')
+        mainModule = atom.packages.getActivePackage('sass-watch').mainModule
+        expect(mainModule.imports[extraPath]).toBe sourcePath

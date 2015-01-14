@@ -8,7 +8,8 @@ module.exports =
     binary: null
     fileName: null
     editor: null
-    disposable: null
+    disposables: []
+    imports: []
 
     constructor: (inPath, outPath, editor) ->
       @inPath = inPath
@@ -25,14 +26,16 @@ module.exports =
 
       @renderFile()
 
-      @disposable = @editor.buffer.emitter.on 'did-save', => @renderFile()
+      @disposables.push @editor.buffer.emitter.on 'did-save', => @renderFile()
 
       @editor.emitter.on 'did-destroy', => @editorClosed()
 
     end: ->
-      @disposable?.dispose()
+      for disposable in @disposables
+        disposable.dispose()
 
     renderFile: ->
+      @findImports()
       childProcess.exec [@binary, @quotePath(@inPath), @quotePath(@outPath)].join(' '), {env: {'PATH': process.env + ":" + atom.config.get('sass-watch.nodePath')}}, (error, stdout, stderr) => @handleExec(error, stdout, stderr)
 
     handleExec: (error, stdout, stderr) ->
@@ -44,17 +47,37 @@ module.exports =
     getFileName: ->
       @inPath.split("/").slice(-1).pop()
 
-    stop: ->
-      @disposable?.dispose()
-
     editorClosed: ->
-      @stop()
+      @end()
       atom.notifications.addInfo('Stopped Watching File', {detail: @inPath})
       SassWatch = atom.packages.getActivePackage('sass-watch')?.mainModule
       delete SassWatch?.watchers[@inPath]
+      delete SassWatch?.imports[@inPath]
 
     updateOutput: (newOutput) ->
       @outPath = newOutput
 
     quotePath: (path) ->
       return ['"', path, '"'].join('')
+
+    findImports: ->
+      imports = @scan(@editor.buffer.cachedText, /@import ['|"](.*?)['|"];/g)
+      for sassImport in imports
+        importPath = path.join(@inPath, '../', sassImport[0])
+        @imports.push importPath if @imports.indexOf(importPath) == -1
+
+      SassWatch = atom.packages.getActivePackage('sass-watch')?.mainModule
+      for childFile in @imports
+        SassWatch?.imports[childFile] = @inPath
+
+    scan: (string, pattern) ->
+      matches = []
+      results = []
+      while matches = pattern.exec(string)
+        matches.shift();
+        results.push(matches)
+
+      return results
+
+    importWatch: (editor) ->
+      @disposables.push editor.buffer.emitter.on 'did-save', => @renderFile()

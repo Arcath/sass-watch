@@ -19,6 +19,7 @@ module.exports =
   nextEditor: null
   watchers: {}
   oldWatchers: {}
+  imports: {}
 
   activate: ->
     atom.commands.add 'atom-workspace', 'sass-watch:watch', => @watchFile()
@@ -81,6 +82,10 @@ module.exports =
 
     if @oldWatchers[filePath]
       atom.notifications.addInfo('Watch Again?', {detail: 'The file\r\n' + filePath + '\r\nhas been watched before if you watch it again the target\r\nwill default to\r\n' + @oldWatchers[filePath]})
+
+    if @imports[filePath]
+      atom.notifications.addInfo('Imported in another file', {detail: 'The file\r\n' + filePath + '\r\nis imported in\r\n' + @imports[filePath]})
+      @watchers[@imports[filePath]].importWatch(editor)
 
   updateWatcher: (path, newOutput) ->
     unless newOutput == @watchers[path].outPath
