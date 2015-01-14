@@ -1,7 +1,7 @@
 {
   "name": "sass-watch",
   "main": "./lib/sass-watch",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Watch a SASS file and compile to CSS",
   "repository": "https://github.com/arcath/sass-watch",
   "license": "MIT",
