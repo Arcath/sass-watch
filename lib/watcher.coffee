@@ -17,7 +17,7 @@ module.exports =
       @nextMessage = outPath
       @fileName = @getFileName()
       @editor = editor
-      @binary = path.join(__dirname, "..", "node_modules", ".bin", "node-sass")
+      @binary = path.join(__dirname, "..", "node_modules", "node-sass", "bin", "node-sass")
 
       @start()
 
@@ -36,7 +36,7 @@ module.exports =
 
     renderFile: ->
       @findImports()
-      childProcess.exec [@binary, @quotePath(@inPath), @quotePath(@outPath)].join(' '), {env: {'PATH': process.env + ":" + atom.config.get('sass-watch.nodePath')}}, (error, stdout, stderr) => @handleExec(error, stdout, stderr)
+      childProcess.exec [atom.config.get('sass-watch.nodeBinary'), @binary, @quotePath(@inPath), @quotePath(@outPath)].join(' '), {env: {'PATH': process.env + ":" + atom.config.get('sass-watch.nodePath')}}, (error, stdout, stderr) => @handleExec(error, stdout, stderr)
 
     handleExec: (error, stdout, stderr) ->
       if error

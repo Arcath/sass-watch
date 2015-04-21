@@ -10,9 +10,9 @@ Watcher = require './watcher'
 
 module.exports =
   config:
-    nodePath:
+    nodeBinary:
       type: 'string'
-      default: '/usr/local/bin'
+      default: path.join process.execPath, '../', 'resources', 'app', 'apm', 'bin', 'node'
 
   listView: null
   targetView: null
