@@ -36,7 +36,9 @@ module.exports =
 
     renderFile: ->
       @findImports()
-      childProcess.exec [@quotePath(atom.config.get('sass-watch.nodeBinary')), @quotePath(@binary), @quotePath(@inPath), @quotePath(@outPath)].join(' '), {env: {'PATH': process.env + ":" + atom.config.get('sass-watch.nodePath')}}, (error, stdout, stderr) => @handleExec(error, stdout, stderr)
+      outDir = path.dirname @outPath
+      outFile = path.basename @outPath
+      childProcess.exec [@quotePath(atom.config.get('sass-watch.nodeBinary')), @quotePath(@binary), @quotePath(@inPath),  "-o", outDir, outFile].join(' '), {env: {'PATH': process.env + ":" + atom.config.get('sass-watch.nodePath')}}, (error, stdout, stderr) => @handleExec(error, stdout, stderr)
 
     handleExec: (error, stdout, stderr) ->
       if error
