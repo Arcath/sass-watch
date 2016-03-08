@@ -22,7 +22,7 @@ module.exports =
   imports: {}
 
   activate: ->
-    atom.notifications.addInfo('sass-watch', {detail: 'sass-watch is no longer supported! Please use compile-watch which contains the same functionality & more!'})
+    atom.notifications.addInfo('sass-watch', {detail: 'sass-watch is no longer supported! Please use compile-watch which contains the same functionality & more! @ https://atom.io/packages/compile-watch'})
     atom.commands.add 'atom-workspace', 'sass-watch:watch', => @watchFile()
     atom.commands.add 'atom-workspace', 'sass-watch:list', => @listWatchers()
 
